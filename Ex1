@@ -1,1 +1,136 @@
+// helped by chatgpt
 
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    double *data;
+    int rows;
+    int cols;
+} Matrix;
+
+Matrix create_matrix(int rows, int cols) {
+    Matrix matrix;
+    matrix.rows = rows;
+    matrix.cols = cols;
+    matrix.data = (double *)malloc(rows * cols * sizeof(double));
+    return matrix;
+}
+
+void free_matrix(Matrix *matrix) {
+    free(matrix->data);
+    matrix->data = NULL;
+    matrix->rows = 0;
+    matrix->cols = 0;
+}
+
+void print_matrix(const Matrix *matrix) {
+    for (int i = 0; i < matrix->rows; i++) {
+        for (int j = 0; j < matrix->cols; j++) {
+            printf("%f ", matrix->data[i * matrix->cols + j]);
+        }
+        printf("\n");
+    }
+}
+
+Matrix transpose_matrix(const Matrix *matrix) {
+    Matrix result = create_matrix(matrix->cols, matrix->rows);
+    for (int i = 0; i < matrix->rows; i++) {
+        for (int j = 0; j < matrix->cols; j++) {
+            result.data[j * result.cols + i] = matrix->data[i * matrix->cols + j];
+        }
+    }
+    return result;
+}
+
+Matrix add_matrices(const Matrix *matrix1, const Matrix *matrix2) {
+    if (matrix1->rows != matrix2->rows || matrix1->cols != matrix2->cols) {
+        fprintf(stderr, "Matrix dimensions must match for addition\n");
+        exit(EXIT_FAILURE);
+    }
+
+    Matrix result = create_matrix(matrix1->rows, matrix1->cols);
+    for (int i = 0; i < matrix1->rows; i++) {
+        for (int j = 0; j < matrix1->cols; j++) {
+            result.data[i * result.cols + j] = matrix1->data[i * matrix1->cols + j] + matrix2->data[i * matrix2->cols + j];
+        }
+    }
+    return result;
+}
+
+Matrix multiply_matrices(const Matrix *matrix1, const Matrix *matrix2) {
+    if (matrix1->cols != matrix2->rows) {
+        fprintf(stderr, "Matrix dimensions must match for multiplication\n");
+        exit(EXIT_FAILURE);
+    }
+
+    Matrix result = create_matrix(matrix1->rows, matrix2->cols);
+    for (int i = 0; i < matrix1->rows; i++) {
+        for (int j = 0; j < matrix2->cols; j++) {
+            result.data[i * result.cols + j] = 0;
+            for (int k = 0; k < matrix1->cols; k++) {
+                result.data[i * result.cols + j] += matrix1->data[i * matrix1->cols + k] * matrix2->data[k * matrix2->cols + j];
+            }
+        }
+    }
+    return result;
+}
+
+Matrix reshape_matrix(const Matrix *matrix, int new_rows, int new_cols) {
+    if (matrix->rows * matrix->cols != new_rows * new_cols) {
+        fprintf(stderr, "Number of elements must remain the same for reshaping\n");
+        exit(EXIT_FAILURE);
+    }
+
+    Matrix result = create_matrix(new_rows, new_cols);
+    for (int i = 0; i < new_rows * new_cols; i++) {
+        result.data[i] = matrix->data[i];
+    }
+    return result;
+}
+
+int main() {
+    Matrix matrix1 = create_matrix(2, 3);
+    matrix1.data[0] = 1.0; matrix1.data[1] = 2.0; matrix1.data[2] = 3.0;
+    matrix1.data[3] = 4.0; matrix1.data[4] = 5.0; matrix1.data[5] = 6.0;
+
+    Matrix matrix2 = create_matrix(2, 3);
+    matrix2.data[0] = 7.0; matrix2.data[1] = 8.0; matrix2.data[2] = 9.0;
+    matrix2.data[3] = 10.0; matrix2.data[4] = 11.0; matrix2.data[5] = 12.0;
+
+    printf("Matrix 1:\n");
+    print_matrix(&matrix1);
+    printf("Matrix 2:\n");
+    print_matrix(&matrix2);
+
+    Matrix transposed = transpose_matrix(&matrix1);
+    printf("Transposed Matrix 1:\n");
+    print_matrix(&transposed);
+
+    Matrix added = add_matrices(&matrix1, &matrix2);
+    printf("Matrix 1 + Matrix 2:\n");
+    print_matrix(&added);
+
+    Matrix matrix3 = create_matrix(3, 2);
+    matrix3.data[0] = 1.0; matrix3.data[1] = 2.0;
+    matrix3.data[2] = 3.0; matrix3.data[3] = 4.0;
+    matrix3.data[4] = 5.0; matrix3.data[5] = 6.0;
+
+    Matrix multiplied = multiply_matrices(&matrix1, &matrix3);
+    printf("Matrix 1 * Matrix 3:\n");
+    print_matrix(&multiplied);
+
+    Matrix reshaped = reshape_matrix(&matrix1, 3, 2);
+    printf("Reshaped Matrix 1 to 3x2:\n");
+    print_matrix(&reshaped);
+
+    free_matrix(&matrix1);
+    free_matrix(&matrix2);
+    free_matrix(&matrix3);
+    free_matrix(&transposed);
+    free_matrix(&added);
+    free_matrix(&multiplied);
+    free_matrix(&reshaped);
+
+    return 0;
+}

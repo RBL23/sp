@@ -19,9 +19,9 @@ To compile and run the program, use the following commands:
 ```sh
 gcc -o matrix_operations matrix_operations.c
 ./matrix_operations
+```
 
-
- Output
+## Output
 
 Matrix 1:
 1.000000 2.000000 3.000000 
@@ -45,7 +45,7 @@ Reshaped Matrix 1 to 3x2:
 5.000000 6.000000 
 
 
- The program includes the following functions:
+## The program includes the following functions:
 
 1. create_matrix(int rows, int cols): Allocates memory for a matrix with specified rows and columns.
 2. free_matrix(Matrix *matrix): Frees the allocated memory for a matrix.
@@ -55,7 +55,7 @@ Reshaped Matrix 1 to 3x2:
 6. multiply_matrices(const Matrix *matrix1, const Matrix *matrix2): Multiplies two matrices and returns the result.
 7. reshape_matrix(const Matrix *matrix, int new_rows, int new_cols): Reshapes a matrix to the specified new dimensions.
 
- Example Usage
+## Example Usage
 In the main function, we demonstrate the creation and manipulation of matrices:
 
 1. Create and populate two matrices, matrix1 and matrix2.

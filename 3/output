@@ -1,0 +1,74 @@
+// all chatgpt / doesn't understand
+4:     if (n < 0) return 1 / power(a, -n);
+    ENT  0          // Enter function, allocate 0 local variables
+    LLA  2          // Load local address of n
+    LI              // Load integer from address
+    PSH             // Push n onto the stack
+    IMM  0          // Load immediate value 0
+    LT              // Compare if n < 0
+    BZ   <address1> // Branch if zero (false), skip the block
+    IMM  1          // Load immediate value 1
+    PSH             // Push 1 onto the stack
+    LLA  3          // Load local address of a
+    LI              // Load integer a from address
+    PSH             // Push a onto the stack
+    IMM  -1         // Load immediate value -1
+    PSH             // Push -1 onto the stack
+    LLA  2          // Load local address of n
+    LI              // Load integer n from address
+    MUL             // Multiply n by -1 (negate n)
+    PSH             // Push the result onto the stack
+    JSR  <power>    // Jump to subroutine (call power)
+    ADJ  2          // Adjust stack pointer (pop arguments)
+    DIV             // Divide 1 by the result of power(a, -n)
+    LEV             // Leave the function (return)
+
+5:     else if (n == 0) return 1;
+    JMP  <address2> // Jump to end of function
+    <address1>:
+    LLA  2          // Load local address of n
+    LI              // Load integer from address
+    PSH             // Push n onto the stack
+    IMM  0          // Load immediate value 0
+    EQ              // Compare if n == 0
+    BZ   <address3> // Branch if zero (false), skip the block
+    IMM  1          // Load immediate value 1
+    LEV             // Leave the function (return 1)
+
+6:     else return a * power(a, n - 1);
+    JMP  <address2> // Jump to end of function
+    <address3>:
+    LLA  3          // Load local address of a
+    LI              // Load integer a from address
+    PSH             // Push a onto the stack
+    LLA  3          // Load local address of a
+    LI              // Load integer a from address
+    PSH             // Push a onto the stack
+    LLA  2          // Load local address of n
+    LI              // Load integer n from address
+    PSH             // Push n onto the stack
+    IMM  1          // Load immediate value 1
+    SUB             // Subtract 1 from n
+    PSH             // Push the result onto the stack
+    JSR  <power>    // Jump to subroutine (call power)
+    ADJ  2          // Adjust stack pointer (pop arguments)
+    MUL             // Multiply a by the result of power(a, n - 1)
+    LEV             // Leave the function (return)
+7: }
+    LEV             // Leave the function (return)
+9: int main() {
+10:     printf("3^2 = %.2f\n", power(3, 2));
+    ENT  0            // Enter function, allocate 0 local variables
+    IMM  <format_str> // Load immediate address of the format string
+    PSH               // Push the format string onto the stack
+    IMM  3            // Load immediate value 3
+    PSH               // Push 3 onto the stack
+    IMM  2            // Load immediate value 2
+    PSH               // Push 2 onto the stack
+    JSR  <power>      // Jump to subroutine (call power)
+    ADJ  2            // Adjust stack pointer (pop arguments)
+    PSH               // Push the result of power onto the stack
+    PRTF              // Print formatted string
+    ADJ  2            // Adjust stack pointer (pop arguments)
+11: }
+    LEV               // Leave the function (return)

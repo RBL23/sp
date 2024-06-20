@@ -1,3 +1,5 @@
+//referencing others work
+
 // c4.c - C in four functions
 
 // char, int, and pointer types
